@@ -50,7 +50,6 @@ const fetchVideos = function(searchTerm, callback) {
   const searchUrl = our_url + searchTerm;
   $.getJSON(searchUrl, (response) => {
     callback(response);
-    console.log(decorateResponse(response));
   });
 
 };
