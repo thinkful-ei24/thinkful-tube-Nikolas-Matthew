@@ -1,5 +1,9 @@
 'use strict';
 
+
+
+
+
 const API_KEY = 'AIzaSyDsr7FpwwmHP-LYRnuYhRJ8HZ0eEjhWTlc';
 
 /*
@@ -45,8 +49,8 @@ const fetchVideos = function(searchTerm, callback) {
   const our_url = BASE_URL + '?part=snippet&key=' +  API_KEY + '&q=';
   const searchUrl = our_url + searchTerm;
   $.getJSON(searchUrl, (response) => {
-    console.log(response);
-    decorateResponse(response)
+    callback(response);
+    console.log(decorateResponse(response));
   });
 
 };
@@ -87,8 +91,14 @@ const decorateResponse = function(response) {
 // 1. Using the decorated object, return an HTML string containing all the expected
 // TEST IT!
 const generateVideoItemHtml = function(video) {
-
+  let generatedHtml = `<li class="${video.id}">
+                         <h3>${video.title}</h3>
+                         <img src="${video.thumbnail}">
+                          </li>`;
+  return generatedHtml;
 };
+
+
 
 /**
  * @function addVideosToStore
@@ -99,7 +109,7 @@ const generateVideoItemHtml = function(video) {
 // 1. Set the received array as the value held in store.videos
 // TEST IT!
 const addVideosToStore = function(videos) {
-
+  store.videos = videos;
 };
 
 
@@ -112,8 +122,12 @@ const addVideosToStore = function(videos) {
 // 2. Add this array of DOM elements to the appropriate DOM element
 // TEST IT!
 const render = function() {
-
+  console.log('render');
+  let htmlVideosArray = store.videos.map(item => generateVideoItemHtml(item));
+  $('.results').html(htmlVideosArray.join(''));
+  
 };
+
 
 /**
  * @function handleFormSubmit
@@ -132,12 +146,19 @@ const render = function() {
 //   g) Inside the callback, run the `render` function 
 // TEST IT!
 const handleFormSubmit = function() {
-
+ 
 };
 
 // When DOM is ready:
 $(function () {
   // TASK:
   // 1. Run `handleFormSubmit` to bind the event listener to the DOM
-  fetchVideos("dog", function(){});
+  fetchVideos('dog', response => {
+    
+    const decoratedVideos = decorateResponse(response);
+    addVideosToStore(decoratedVideos);
+    render();
+    
+  });
+  console.log("hello");
 });
